@@ -16,9 +16,11 @@ def before_first_request():
     if first_request:
         def load_model():
             global model, tokenizer
+            print("Loading model...")  # Debug log to confirm the model is being loaded
             model_name = "distilgpt2"
             model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
             tokenizer = AutoTokenizer.from_pretrained(model_name)
+            print("Model loaded!")  # Debug log to confirm the model is being loaded
             first_request = False
 
 # Lazy loading when the first request comes in
