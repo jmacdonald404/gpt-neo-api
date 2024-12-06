@@ -9,7 +9,7 @@ model = None
 tokenizer = None
 
 # Lazy loading when the first request comes in
-@app.before_first_request
+with app.app_context():
 def load_model():
     global model, tokenizer
     model_name = "distilgpt2"
