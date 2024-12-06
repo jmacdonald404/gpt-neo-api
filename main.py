@@ -7,25 +7,23 @@ app = Flask(__name__)
 # Initialize the model and tokenizer as None, to load them lazily
 model = None
 tokenizer = None
+model_loaded = False  # Flag to ensure model is only loaded once
 
-first_request = True
+def load_model():
+    """Load the model and tokenizer if they are not already loaded."""
+    global model, tokenizer, model_loaded
+    if not model_loaded:
+        print("Loading model...")  # Debug log to confirm the model is being loaded
+        model_name = "distilgpt2"
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        print("Model loaded!")  # Debug log
+        model_loaded = True
 
 @app.before_request
-def before_first_request():
-    global first_request
-    if first_request:
-        def load_model():
-            global model, tokenizer
-            print("Loading model...")  # Debug log to confirm the model is being loaded
-            model_name = "distilgpt2"
-            model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
-            tokenizer = AutoTokenizer.from_pretrained(model_name)
-            print("Model loaded!")  # Debug log to confirm the model is being loaded
-            first_request = False
-
-# Lazy loading when the first request comes in
-#with app.app_context():
-    
+def ensure_model_loaded():
+    """Ensure the model is loaded before handling any request."""
+    load_model()
 
 @app.route("/chat", methods=["POST"])
 def chat():
