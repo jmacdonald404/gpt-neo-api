@@ -10,11 +10,11 @@ tokenizer = None
 
 # Lazy loading when the first request comes in
 with app.app_context():
-def load_model():
-    global model, tokenizer
-    model_name = "distilgpt2"
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    def load_model():
+        global model, tokenizer
+        model_name = "distilgpt2"
+        model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 @app.route("/chat", methods=["POST"])
 def chat():
